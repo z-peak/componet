@@ -13,9 +13,9 @@ public class BookActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
-        TextView textView=findViewById(R.id.textView);
-        Bundle bundle=getIntent().getBundleExtra("bundle");
-        textView.setText(bundle.getString("name")+" -- "+bundle.getInt("age"));
+//        TextView textView=findViewById(R.id.textView);
+//        Bundle bundle=getIntent().getBundleExtra("bundle");
+//        textView.setText(bundle.getString("name")+" -- "+bundle.getInt("age"));
 
     }
 }
