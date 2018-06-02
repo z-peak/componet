@@ -6,7 +6,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".BookActivity"></activity>
+        <activity android:name=".BookActivity" />
     </application>
 
 </manifest>

@@ -6,5 +6,5 @@ package com.example.zf.common.base;
  */
 
 public class BuildConfig {
-    public static final boolean IS_DEBUG = false;
+    public static final boolean IS_DEBUG = true;
 }
