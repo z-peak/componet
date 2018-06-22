@@ -27,7 +27,7 @@
 
     7、控制代码权限，将代码的权限细分到更小的粒度；
   
-#二、实现流程
+# 二、实现流程
 > **1、组件模式与集成模式转换**
 
 	AndroidStudio的Module主要有两种属性：application和library
@@ -51,6 +51,62 @@
 这样就可以做到**一次改变处处生效**
 
 > **2、组件中AndroidManifest.xml合并问题**
+		
+Android中每个Module都有一个AndroidManifest.xml文件，但是组件模式与集成模式的
+AndroidManifest.xml不同，这就需要我们根据不同的模式来配置不同的AndroidManifest.xml文件。
+
+集成模式下的清单文件：
+
+    <application android:theme="@style/AppTheme">
+	    <activity
+		    android:name=".MainActivity"
+		    android:screenOrientation="portrait" />
+	    <activity android:name=".BookActivity" />
+    </application>
+
+组件模式下的清单文件：
 	
-	Android中每个Module都有一个AndroidManifest.xml文件，但是组件模式与集成模式的AndroidManifest.xml不同，这就需要我们根据不同的模式来配置不同的AndroidManifest.xml文件。
-	
+	<application
+        android:name=".debug.ComponentApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+所以我们可以在main文件夹下创建module文件夹，并在文件夹下创建一个AndroidManifest.xml文件。然后在build.gradle中配置：
+
+	sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                //集成模式下排除debug文件夹中的所有文件
+                java {
+                    exclude 'debug/**'
+                }
+            }
+        }
+    }
+
+> **3、组建模式下需要用到的一些文件**
+ 
+一个应用只需要有一个Application，但是在组件开发模式下，组件要有自己的Application，这时，就可以在Java文件夹下创建一个文件夹（如：debug）来存放Application。在build.gradle文件中配置集成模式下排除debug文件夹中的所有文件。
+在组件化开发中需要有一个Common组件，用来存放所有组件都要用到的一些工具类、依赖、BaseApplication等。
+
+> **4、组件之间的调用和通信**
+
+所有组件包括壳工程都会依赖Common组件，壳工程会依赖其它所有组件。但是组件之间是不会相互依赖的，组件也不会依赖壳工程的。这样它们之间如何进行页面跳转呢？
+
+通过路由，这里用的是阿里的ARouter:[https://github.com/alibaba/ARouter](https://github.com/alibaba/ARouter)
+
